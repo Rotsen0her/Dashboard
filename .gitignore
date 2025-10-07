@@ -1,6 +1,96 @@
-# Include your project-specific ignores in this file
-# Read about how to use .gitignore: https://help.github.com/articles/ignoring-files
-# Useful .gitignore templates: https://github.com/github/gitignore
-node_modules
-dist
-.cache
+# .gitignore para el proyecto Dashboard
+# Evita subir dependencias, artefactos de build, secretos, configuraciones de IDE y archivos del SO.
+
+# --- Node/npm ---
+/node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Common build folders
+/dist/
+/build/
+/out/
+/coverage/
+/.cache/
+/.next/
+
+# Logs
+/logs
+*.log
+npm-debug.log*
+
+# Environment files (contienen secretos)
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS-specific
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon
+
+# Editors / IDEs
+/.idea/
+*.iml
+/.vscode/
+
+# JetBrains specific local files
+/.idea/**/workspace.xml
+/.idea/**/tasks.xml
+
+# Editor backups
+*~
+*.swp
+
+# Docker and containers
+# Ignore docker-compose override files that are often local
+docker-compose.override.yml
+docker-compose.*.local.yml
+
+# Docker temporary files
+.docker/
+
+# Certificates and certbot (no subir claves privadas)
+/certbot/live/
+/certbot/archive/
+/certbot/renewal/
+/certbot/**/keys/
+*.pem
+*.key
+*.crt
+
+# nginx generated certs or keys
+/nginx/*.key
+/nginx/*.pem
+
+# Backend/frontend specific
+/backend/node_modules/
+/backend/dist/
+/frontend/node_modules/
+/frontend/dist/
+/frontend/build/
+
+# Package manager caches and misc
+.npm
+/.parcel-cache
+
+# Misc generated files
+*.pid
+*.seed
+
+# Binary files you don't want in git
+*.exe
+*.dll
+
+# Coverage
+coverage/
+
+# Keep package-lock.json and yarn.lock tracked (helps reproducible installs)
+# If you intentionally want to ignore lockfiles, remove the lines above.
