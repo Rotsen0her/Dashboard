@@ -24,11 +24,6 @@ npm-debug.log*
 
 # Environment files (contienen secretos)
 .env
-.env.*
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 # OS-specific
 .DS_Store
