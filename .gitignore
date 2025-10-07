@@ -36,10 +36,6 @@ Icon
 *.iml
 /.vscode/
 
-# JetBrains specific local files
-/.idea/**/workspace.xml
-/.idea/**/tasks.xml
-
 # Editor backups
 *~
 *.swp
