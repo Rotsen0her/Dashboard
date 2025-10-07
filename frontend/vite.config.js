@@ -10,4 +10,9 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    host: true, // Permite conexiones desde cualquier host (necesario para Live Share)
+    port: 5173,
+    strictPort: true,
+  },
 })
