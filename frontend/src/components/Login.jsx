@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const API_URL = 'http://localhost:4000';
+const API_URL = '/api';
 
 function Login({ onLoginSuccess, onSwitchToRegister }) {
   const [username, setUsername] = useState('');

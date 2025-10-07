@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_URL = 'http://localhost:4000';
+const API_URL = '/api';
 
 function Dashboard({ token, onLogout }) {
   const [wallpapers, setWallpapers] = useState([]);
