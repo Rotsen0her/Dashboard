@@ -84,7 +84,7 @@ function Dashboard({ token, onLogout }) {
             <h1 className="text-2xl font-bold">Panel de Wallpapers</h1>
             <button
               onClick={onLogout}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold hover:bg-red-500"
+              className="rounded-lg bg-black px-4 py-2 text-sm font-semibold hover:bg-red-500"
             >
               Cerrar Sesión
             </button>

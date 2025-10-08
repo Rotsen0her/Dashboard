@@ -71,9 +71,6 @@ function Register({ onRegisterSuccess, onSwitchToLogin }) {
             <h2 className="text-3xl font-light tracking-tight text-white">
               Crear cuenta
             </h2>
-            <p className="mt-2 text-sm text-purple-300/60">
-              Únete hoy
-            </p>
           </div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
