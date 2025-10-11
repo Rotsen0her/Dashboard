@@ -105,4 +105,70 @@ app.get('/my-wallpapers', auth, async (req, res) => {
   }
 });
 
+// === Obtener todos los wallpapers (con info de usuario) - SIN AUTENTICACIÓN ===
+app.get('/wallpapers', async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      'SELECT w.url, u.username FROM wallpapers w JOIN users u ON w.user_id = u.id ORDER BY w.created_at DESC'
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener wallpapers:', error);
+    res.status(500).json({ message: 'Error al obtener wallpapers', error: error.message });
+  }
+});
+
+// === Eliminar wallpaper ===
+app.delete('/wallpaper', auth, async (req, res) => {
+  try {
+    const { url } = req.body;
+    await pool.query('DELETE FROM wallpapers WHERE user_id=$1 AND url=$2', [req.user.id, url]);
+    res.json({ message: 'Wallpaper eliminado' });
+  } catch (error) {
+    console.error('Error al eliminar wallpaper:', error);
+    res.status(500).json({ message: 'Error al eliminar wallpaper', error: error.message });
+  }
+});
+
+// === Agregar a favoritos ===
+app.post('/favorites', auth, async (req, res) => {
+  try {
+    const { wallpaper_url } = req.body;
+    await pool.query(
+      'INSERT INTO favorites (user_id, wallpaper_url) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+      [req.user.id, wallpaper_url]
+    );
+    res.json({ message: 'Agregado a favoritos' });
+  } catch (error) {
+    console.error('Error al agregar a favoritos:', error);
+    res.status(500).json({ message: 'Error al agregar a favoritos', error: error.message });
+  }
+});
+
+// === Quitar de favoritos ===
+app.delete('/favorites', auth, async (req, res) => {
+  try {
+    const { wallpaper_url } = req.body;
+    await pool.query('DELETE FROM favorites WHERE user_id=$1 AND wallpaper_url=$2', [req.user.id, wallpaper_url]);
+    res.json({ message: 'Quitado de favoritos' });
+  } catch (error) {
+    console.error('Error al quitar de favoritos:', error);
+    res.status(500).json({ message: 'Error al quitar de favoritos', error: error.message });
+  }
+});
+
+// === Obtener favoritos ===
+app.get('/favorites', auth, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      'SELECT f.wallpaper_url, u.username FROM favorites f LEFT JOIN wallpapers w ON f.wallpaper_url = w.url LEFT JOIN users u ON w.user_id = u.id WHERE f.user_id=$1',
+      [req.user.id]
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener favoritos:', error);
+    res.status(500).json({ message: 'Error al obtener favoritos', error: error.message });
+  }
+});
+
 app.listen(4000, () => console.log('Backend en puerto 4000'));

@@ -1,209 +1,94 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Login from './components/Login';
 import Register from './components/Register';
-import Dashboard from './components/Dashboard';
-
-// ⚠️ MODO DISEÑO ACTIVADO - Cambiar DESIGN_MODE a false para volver a producción
-const DESIGN_MODE = true;
+import Layout from './components/Layout';
+import Home from './components/Home';
+import UploadWallpaper from './components/UploadWallpaper';
+import MyWallpapers from './components/MyWallpapers';
+import Favorites from './components/Favorites';
 
 function App() {
-  const [currentView, setCurrentView] = useState('login'); // 'login', 'register', 'dashboard'
+  const [showAuthModal, setShowAuthModal] = useState(null); // 'login', 'register', null
+  const [currentPage, setCurrentPage] = useState('home');
   const [token, setToken] = useState(localStorage.getItem('token') || null);
-  const [position, setPosition] = useState({ x: window.innerWidth - 410, y: 16 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const navRef = useRef(null);
+  const [username, setUsername] = useState(localStorage.getItem('username') || null);
 
-  const handleMouseDown = (e) => {
-    if (e.target.classList.contains('drag-handle')) {
-      setIsDragging(true);
-      setDragStart({
-        x: e.clientX - position.x,
-        y: e.clientY - position.y
-      });
-    }
-  };
-
-  const handleMouseMove = (e) => {
-    if (isDragging) {
-      setPosition({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
-      });
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleLoginSuccess = (newToken) => {
+  const handleLoginSuccess = (newToken, user) => {
     setToken(newToken);
+    setUsername(user);
     localStorage.setItem('token', newToken);
-    setCurrentView('dashboard');
+    localStorage.setItem('username', user);
+    setShowAuthModal(null);
   };
 
   const handleLogout = () => {
     setToken(null);
+    setUsername(null);
     localStorage.removeItem('token');
-    setCurrentView('login');
+    localStorage.removeItem('username');
+    setCurrentPage('home');
   };
 
-  //BORRAR CUANDO TERMINES EL DISEÑO
-  // MODO DISEÑO: Muestra navegador para cambiar entre páginas
-  if (DESIGN_MODE) {
-    return (
-      <div 
-        className="min-h-screen bg-gray-900"
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-      >
-        {/* Navegador flotante para diseño - ARRASTRABLE */}
-        <div 
-          ref={navRef}
-          style={{ 
-            position: 'fixed', 
-            left: `${position.x}px`,
-            top: `${position.y}px`,
-            zIndex: 9999,
-            background: 'rgba(0,0,0,0.9)',
-            padding: '4px',
-            borderRadius: '12px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4px',
-            border: '1px solid rgba(124, 58, 237, 0.3)',
-            boxShadow: '0 10px 40px rgba(124, 58, 237, 0.3)',
-            cursor: isDragging ? 'grabbing' : 'default',
-            userSelect: 'none'
-          }}
-          onMouseDown={handleMouseDown}
-        >
-          {/* Área de arrastre */}
-          <div 
-            className="drag-handle"
-            style={{
-              padding: '8px',
-              textAlign: 'center',
-              cursor: 'grab',
-              borderBottom: '1px solid rgba(124, 58, 237, 0.2)',
-              color: '#A78BFA',
-              fontSize: '10px',
-              fontWeight: 'bold',
-              letterSpacing: '1px',
-              textTransform: 'uppercase'
-            }}
-          >
-            ⋮⋮⋮ Modo Diseño
-          </div>
-
-          {/* Botones */}
-          <div style={{ display: 'flex', gap: '6px', padding: '4px' }}>
-            <button 
-              onClick={() => setCurrentView('login')}
-              style={{
-                padding: '8px 16px',
-                background: currentView === 'login' ? 'linear-gradient(135deg, #7C3AED, #6B21A8)' : '#374151',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: currentView === 'login' ? 'bold' : 'normal',
-                fontSize: '12px',
-                transition: 'all 0.2s',
-                boxShadow: currentView === 'login' ? '0 4px 12px rgba(124, 58, 237, 0.4)' : 'none'
-              }}
-            >
-              Login
-            </button>
-            <button 
-              onClick={() => setCurrentView('register')}
-              style={{
-                padding: '8px 16px',
-                background: currentView === 'register' ? 'linear-gradient(135deg, #7C3AED, #6B21A8)' : '#374151',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: currentView === 'register' ? 'bold' : 'normal',
-                fontSize: '12px',
-                transition: 'all 0.2s',
-                boxShadow: currentView === 'register' ? '0 4px 12px rgba(124, 58, 237, 0.4)' : 'none'
-              }}
-            >
-              Register
-            </button>
-            <button 
-              onClick={() => setCurrentView('dashboard')}
-              style={{
-                padding: '8px 16px',
-                background: currentView === 'dashboard' ? 'linear-gradient(135deg, #7C3AED, #6B21A8)' : '#374151',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: currentView === 'dashboard' ? 'bold' : 'normal',
-                fontSize: '12px',
-                transition: 'all 0.2s',
-                boxShadow: currentView === 'dashboard' ? '0 4px 12px rgba(124, 58, 237, 0.4)' : 'none'
-              }}
-            >
-              Dashboard
-            </button>
-          </div>
-        </div>
-
-        {/* Renderizar vista seleccionada */}
-        {currentView === 'login' && (
-          <Login 
-            onLoginSuccess={() => {}}
-            onSwitchToRegister={() => setCurrentView('register')}
-          />
-        )}
-        
-        {currentView === 'register' && (
-          <Register 
-            onRegisterSuccess={() => {}}
-            onSwitchToLogin={() => setCurrentView('login')}
-          />
-        )}
-        
-        {currentView === 'dashboard' && (
-          <Dashboard 
-            token="design-mode-token"
-            onLogout={() => setCurrentView('login')}
-          />
-        )}
-      </div>
-    );
-  }
-
-
-
-
-  
-  // MODO PRODUCCIÓN: Flujo normal con autenticación
+  const handleNavigate = (page) => {
+    // Si intenta acceder a páginas protegidas sin login, mostrar modal de login
+    if (!token && (page === 'upload' || page === 'my-wallpapers' || page === 'favorites')) {
+      setShowAuthModal('login');
+      return;
+    }
+    setCurrentPage(page);
+  };
   return (
-    <div className="min-h-screen bg-gray-900">
-      {!token ? (
-        <>
-          {currentView === 'login' ? (
+    <>
+      <Layout
+        currentPage={currentPage}
+        onNavigate={handleNavigate}
+        onLogout={handleLogout}
+        username={username}
+        token={token}
+        onShowLogin={() => setShowAuthModal('login')}
+        onShowRegister={() => setShowAuthModal('register')}
+      >
+        {currentPage === 'home' && <Home token={token} />}
+        {currentPage === 'upload' && token && <UploadWallpaper token={token} />}
+        {currentPage === 'my-wallpapers' && token && <MyWallpapers token={token} />}
+        {currentPage === 'favorites' && token && <Favorites token={token} />}
+      </Layout>
+
+      {/* Modales de autenticación */}
+      {showAuthModal === 'login' && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="relative">
+            <button
+              onClick={() => setShowAuthModal(null)}
+              className="absolute -top-4 -right-4 z-10 w-10 h-10 bg-purple-600 hover:bg-purple-700 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg"
+            >
+              ×
+            </button>
             <Login 
               onLoginSuccess={handleLoginSuccess}
-              onSwitchToRegister={() => setCurrentView('register')}
+              onSwitchToRegister={() => setShowAuthModal('register')}
             />
-          ) : (
-            <Register 
-              onRegisterSuccess={() => setCurrentView('login')}
-              onSwitchToLogin={() => setCurrentView('login')}
-            />
-          )}
-        </>
-      ) : (
-        <Dashboard token={token} onLogout={handleLogout} />
+          </div>
+        </div>
       )}
-    </div>
+
+      {showAuthModal === 'register' && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="relative">
+            <button
+              onClick={() => setShowAuthModal(null)}
+              className="absolute -top-4 -right-4 z-10 w-10 h-10 bg-purple-600 hover:bg-purple-700 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg"
+            >
+              ×
+            </button>
+            <Register 
+              onRegisterSuccess={() => setShowAuthModal('login')}
+              onSwitchToLogin={() => setShowAuthModal('login')}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

@@ -25,7 +25,7 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
       const data = await response.json();
 
       if (response.ok) {
-        onLoginSuccess(data.token);
+        onLoginSuccess(data.token, username);
       } else {
         setError(data.message || 'Error al iniciar sesión');
       }
