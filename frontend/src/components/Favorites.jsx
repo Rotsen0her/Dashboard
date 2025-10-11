@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import ImageModal from './ImageModal';
+import ImageView from './ImageView';
 
 const API_URL = '/api';
 
@@ -7,7 +7,7 @@ function Favorites({ token }) {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [viewingImage, setViewingImage] = useState(null);
 
   useEffect(() => {
     fetchFavorites();
@@ -71,6 +71,17 @@ function Favorites({ token }) {
     }
   };
 
+  if (viewingImage) {
+    return (
+      <ImageView
+        imageUrl={viewingImage}
+        onClose={() => setViewingImage(null)}
+        token={token}
+        isFavorite={true}
+      />
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -126,13 +137,15 @@ function Favorites({ token }) {
             key={index}
             className="group relative overflow-hidden rounded-lg bg-gray-900 border border-purple-900/20 hover:border-purple-600/50 transition-all duration-300 shadow-lg hover:shadow-purple-600/20"
           >
-            <div className="relative aspect-video overflow-hidden cursor-pointer">
+            <div 
+              className="relative aspect-video overflow-hidden cursor-pointer"
+              onClick={() => setViewingImage(favorite.wallpaper_url)}
+            >
               <img
                 src={favorite.wallpaper_url}
                 alt={`Favorito ${index + 1}`}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 loading="lazy"
-                onClick={() => setSelectedImage(favorite)}
               />
               
               {/* Overlay con información y acciones */}
@@ -199,19 +212,6 @@ function Favorites({ token }) {
           </div>
         ))}
       </div>
-
-      {/* Modal de imagen */}
-      {selectedImage && (
-        <ImageModal
-          image={selectedImage.wallpaper_url}
-          username={selectedImage.username}
-          onClose={() => setSelectedImage(null)}
-          onToggleFavorite={removeFavorite}
-          isFavorite={true}
-          onDownload={handleDownload}
-          token={token}
-        />
-      )}
     </div>
   );
 }

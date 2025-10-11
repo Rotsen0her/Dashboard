@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import ImageModal from './ImageModal';
+import ImageView from './ImageView';
 
 const API_URL = '/api';
 
@@ -8,7 +8,7 @@ function Home({ token }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [favorites, setFavorites] = useState(new Set());
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [viewingImage, setViewingImage] = useState(null);
 
   useEffect(() => {
     fetchAllWallpapers();
@@ -108,6 +108,17 @@ function Home({ token }) {
     }
   };
 
+  if (viewingImage) {
+    return (
+      <ImageView
+        imageUrl={viewingImage}
+        onClose={() => setViewingImage(null)}
+        token={token}
+        isFavorite={favorites.has(viewingImage)}
+      />
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -162,13 +173,15 @@ function Home({ token }) {
             className="group relative overflow-hidden rounded-lg bg-gray-900 border border-purple-900/20 hover:border-purple-600/50 transition-all duration-300 shadow-lg hover:shadow-purple-600/20"
           >
             {/* Contenedor con aspect ratio 16:9 */}
-            <div className="relative aspect-video overflow-hidden cursor-pointer">
+            <div 
+              className="relative aspect-video overflow-hidden cursor-pointer"
+              onClick={() => setViewingImage(wallpaper.url || wallpaper)}
+            >
               <img
                 src={wallpaper.url || wallpaper}
                 alt={`Wallpaper ${index + 1}`}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 loading="lazy"
-                onClick={() => setSelectedImage(wallpaper)}
               />
               
               {/* Overlay con botones */}
@@ -230,19 +243,6 @@ function Home({ token }) {
           </div>
         ))}
       </div>
-
-      {/* Modal de imagen */}
-      {selectedImage && (
-        <ImageModal
-          image={selectedImage.url || selectedImage}
-          username={selectedImage.username}
-          onClose={() => setSelectedImage(null)}
-          onToggleFavorite={toggleFavorite}
-          isFavorite={favorites.has(selectedImage.url || selectedImage)}
-          onDownload={handleDownload}
-          token={token}
-        />
-      )}
     </div>
   );
 }
