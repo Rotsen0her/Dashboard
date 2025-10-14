@@ -1,8 +1,31 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Layout({ children, currentPage, onNavigate, onLogout, username, token, onShowLogin, onShowRegister }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  // Cerrar sidebar automáticamente cuando la ventana cambie de tamaño
+  useEffect(() => {
+    const handleResize = () => {
+      // Si la pantalla es menor a 1024px (lg breakpoint), cerrar el sidebar
+      if (window.innerWidth < 1024) {
+        setIsSidebarOpen(false);
+      }
+      // También cerrar el menú de usuario si está abierto
+      setIsUserMenuOpen(false);
+    };
+
+    // Agregar el event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Verificar el tamaño inicial
+    handleResize();
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const menuItems = [
     { id: 'home', label: 'Inicio', icon: '🏠', public: true },
