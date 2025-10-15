@@ -47,71 +47,85 @@ function ImageView({ imageUrl, username, onClose, token, isFavorite: initialFavo
     }
   };
 
+  useEffect(() => {
+    // Prevenir scroll cuando está abierto
+    document.body.style.overflow = 'hidden';
+    
+    // Cerrar con ESC
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleEscape);
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [onClose]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-950">
-      {/* Header con botón de volver */}
-      <header className="sticky top-0 z-30 bg-black/80 backdrop-blur-sm border-b border-purple-900/30">
-        <div className="px-4 py-4 flex items-center justify-between max-w-7xl mx-auto">
-          <button
-            onClick={onClose}
-            className="flex items-center gap-2 px-4 py-2 text-purple-300 hover:text-white transition-colors"
+    <div 
+      className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm overflow-y-auto"
+      onClick={onClose}
+    >
+      <div 
+        className="min-h-screen p-4 md:p-6 lg:p-8"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Botón cerrar flotante */}
+        <button
+          onClick={onClose}
+          className="fixed top-4 right-4 z-10 w-12 h-12 bg-black/80 hover:bg-purple-600 border border-purple-900/50 rounded-full flex items-center justify-center text-white transition-all shadow-lg hover:scale-110"
+          aria-label="Cerrar"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            Volver
-          </button>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
 
-          <h1 className="text-xl font-semibold text-white">Ver Wallpaper</h1>
-
-          <div className="w-24"></div> {/* Espaciador para centrar el título */}
-        </div>
-      </header>
-
-      {/* Contenido principal */}
-      <main className="max-w-7xl mx-auto p-4 lg:p-8">
-        <div className="space-y-6">
+        {/* Container principal */}
+        <div className="max-w-7xl mx-auto space-y-4 md:space-y-6 pt-16 md:pt-4">
           {/* Imagen */}
-          <div className="relative rounded-lg overflow-hidden shadow-2xl shadow-purple-900/20 border border-purple-900/30">
+          <div className="relative rounded-xl overflow-hidden shadow-2xl shadow-purple-900/30 border border-purple-900/30 bg-black">
             <img
               src={imageUrl}
               alt="Wallpaper"
-              className="w-full h-auto"
+              className="w-full h-auto max-h-[70vh] object-contain"
             />
           </div>
 
-          {/* Información y botones */}
-          <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-900/30 rounded-lg p-6">
-            <div className="flex items-center justify-between flex-wrap gap-4">
+          {/* Panel de información y acciones */}
+          <div className="bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-md border border-purple-900/30 rounded-xl p-4 md:p-6 shadow-xl">
+            <div className="space-y-4">
               {/* Info del usuario */}
               {username && (
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-purple-900 flex items-center justify-center text-white text-lg font-semibold">
+                <div className="flex items-center space-x-3 pb-4 border-b border-purple-900/30">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-purple-600 to-purple-900 flex items-center justify-center text-white text-lg md:text-xl font-semibold shadow-lg">
                     {username.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-white font-medium text-lg">{username}</p>
-                    <p className="text-purple-300/60 text-sm">Subido por</p>
+                    <p className="text-white font-medium text-base md:text-lg">{username}</p>
+                    <p className="text-purple-300/70 text-xs md:text-sm">Subido por</p>
                   </div>
                 </div>
               )}
 
-              {/* Botones de acción */}
-              <div className="flex items-center gap-3">
+              {/* Botones de acción - Responsive */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 {/* Botón de descarga */}
                 <button
                   onClick={handleDownload}
-                  className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2 shadow-lg"
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-purple-600/50 hover:scale-[1.02]"
                 >
                   <svg
                     className="w-5 h-5"
@@ -126,33 +140,36 @@ function ImageView({ imageUrl, username, onClose, token, isFavorite: initialFavo
                       d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                     />
                   </svg>
-                  Descargar Wallpaper
+                  <span className="hidden sm:inline">Descargar</span>
+                  <span className="sm:hidden">Descargar Wallpaper</span>
                 </button>
                 
                 {/* Botón de favorito */}
                 {token && (
                   <button
                     onClick={handleToggleFavorite}
-                    className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2 shadow-lg"
+                    className={`flex-1 px-4 py-3 font-medium rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] ${
+                      isFavorite 
+                        ? 'bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white hover:shadow-yellow-600/50' 
+                        : 'bg-gradient-to-r from-gray-700 to-gray-800 hover:from-purple-600 hover:to-purple-700 text-white hover:shadow-purple-600/50'
+                    }`}
                   >
-                    {isFavorite ? (
-                      <>
-                        <span className="text-2xl">⭐</span>
-                        <span>En Favoritos</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-2xl">☆</span>
-                        <span>Marcar Favorito</span>
-                      </>
-                    )}
+                    <span className="text-xl">
+                      {isFavorite ? '⭐' : '☆'}
+                    </span>
+                    <span className="hidden sm:inline">
+                      {isFavorite ? 'En Favoritos' : 'Favorito'}
+                    </span>
+                    <span className="sm:hidden">
+                      {isFavorite ? 'Quitar de Favoritos' : 'Marcar como Favorito'}
+                    </span>
                   </button>
                 )}
               </div>
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

@@ -37,18 +37,12 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
   };
 
   return (
+
     <div className="flex min-h-screen items-center justify-center bg-black px-4">
-      {/* Fondo con gradiente sutil */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-950/20 via-black to-purple-950/20" />
-      
-      {/* Card principal */}
+      <div className="absolute inset-0" />
       <div className="relative w-full max-w-md">
-        {/* Glow effect morado */}
         <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-purple-900 rounded-2xl blur-xl opacity-20" />
-        
-        {/* Contenido */}
         <div className="relative space-y-8 rounded-2xl border border-purple-900/30 bg-black/90 p-8 backdrop-blur-sm">
-          {/* Header */}
           <div className="text-center">
             <div className="mb-2 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-purple-900">
               <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,7 +58,6 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
           </div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
-            {/* Input Usuario */}
             <div className="space-y-2">
               <label htmlFor="username" className="text-xs font-medium uppercase tracking-wider text-purple-400/80">
                 Usuario
@@ -81,7 +74,6 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
               />
             </div>
 
-            {/* Input Password */}
             <div className="space-y-2">
               <label htmlFor="password" className="text-xs font-medium uppercase tracking-wider text-purple-400/80">
                 Contraseña
@@ -98,7 +90,6 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
               />
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="flex items-center gap-2 rounded-lg border border-red-900/30 bg-red-950/20 p-3">
                 <svg className="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,7 +99,6 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
               </div>
             )}
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
@@ -134,7 +124,6 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
               </span>
             </button>
 
-            {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-purple-900/30" />
@@ -144,7 +133,6 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
               </div>
             </div>
 
-            {/* Register Link */}
             <button
               type="button"
               onClick={onSwitchToRegister}

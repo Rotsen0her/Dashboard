@@ -1,42 +1,51 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function Layout({ children, currentPage, onNavigate, onLogout, username, token, onShowLogin, onShowRegister }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
 
-  // Cerrar sidebar automáticamente cuando la ventana cambie de tamaño
   useEffect(() => {
     const handleResize = () => {
-      // Si la pantalla es menor a 1024px (lg breakpoint), cerrar el sidebar
-      if (window.innerWidth < 1024) {
+      if (window.innerWidth >= 1024) {
+        setIsSidebarOpen(true);
+      } else {
         setIsSidebarOpen(false);
       }
-      // También cerrar el menú de usuario si está abierto
       setIsUserMenuOpen(false);
     };
 
-    // Agregar el event listener
     window.addEventListener('resize', handleResize);
     
-    // Verificar el tamaño inicial
     handleResize();
 
-    // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
 
+  useEffect(() => {
+    if (!isUserMenuOpen) return;
+    function handleClickOutside(event) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isUserMenuOpen]);
+
   const menuItems = [
-    { id: 'home', label: 'Inicio', icon: '🏠', public: true },
-    { id: 'upload', label: 'Subir Wallpaper', icon: '⬆️', public: false },
-    { id: 'my-wallpapers', label: 'Mis Wallpapers', icon: '🖼️', public: false },
-    { id: 'favorites', label: 'Favoritos', icon: '⭐', public: false },
+    { id: 'home', label: 'Inicio', public: true },
+    { id: 'upload', label: 'Subir Wallpaper', public: false },
+    { id: 'my-wallpapers', label: 'Mis Wallpapers', public: false },
+    { id: 'favorites', label: 'Favoritos', public: false },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-950">
-      {/* Overlay cuando el sidebar está abierto */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -44,13 +53,11 @@ function Layout({ children, currentPage, onNavigate, onLogout, username, token, 
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-black/90 backdrop-blur-sm border-r border-purple-900/30 transform transition-transform duration-300 z-50 ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
-        {/* Logo / Header del Sidebar */}
         <div className="p-6 border-b border-purple-900/30">
           <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">
             Wallpapers
@@ -58,14 +65,15 @@ function Layout({ children, currentPage, onNavigate, onLogout, username, token, 
           <p className="text-sm text-purple-300/60 mt-1">Galería Personal</p>
         </div>
 
-        {/* Menu Items */}
         <nav className="p-4 space-y-2">
           {menuItems.map((item) => (
             <button
               key={item.id}
               onClick={() => {
                 onNavigate(item.id);
-                setIsSidebarOpen(false);
+                if (window.innerWidth < 1024) {
+                  setIsSidebarOpen(false);
+                }
               }}
               disabled={!item.public && !token}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
@@ -84,15 +92,12 @@ function Layout({ children, currentPage, onNavigate, onLogout, username, token, 
         </nav>
       </aside>
 
-      {/* Main Content */}
-      <div className="min-h-screen">
-        {/* Top Bar */}
+      <div className="min-h-screen lg:ml-64 transition-all duration-300">
         <header className="sticky top-0 z-30 bg-black/80 backdrop-blur-sm border-b border-purple-900/30">
           <div className="px-4 py-4 flex items-center justify-between">
-            {/* Hamburger Button */}
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2 rounded-lg text-purple-300 hover:bg-purple-900/30 transition-colors"
+              className="p-2 rounded-lg text-purple-300 hover:bg-purple-900/30 transition-colors lg:hidden"
             >
               <svg
                 className="w-6 h-6"
@@ -109,12 +114,10 @@ function Layout({ children, currentPage, onNavigate, onLogout, username, token, 
               </svg>
             </button>
 
-            {/* Page Title */}
             <h1 className="text-xl font-semibold text-white">
               {menuItems.find(item => item.id === currentPage)?.label || 'Dashboard'}
             </h1>
 
-            {/* User Menu */}
             <div className="relative">
               {token ? (
                 <>
@@ -127,9 +130,8 @@ function Layout({ children, currentPage, onNavigate, onLogout, username, token, 
                     </div>
                   </button>
 
-                  {/* Dropdown Menu */}
                   {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-sm border border-purple-900/30 rounded-lg shadow-xl shadow-purple-900/20 overflow-hidden">
+                    <div ref={userMenuRef} className="absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-sm border border-purple-900/30 rounded-lg shadow-xl shadow-purple-900/20 overflow-hidden">
                       <div className="px-4 py-3 border-b border-purple-900/30">
                         <p className="text-sm font-medium text-white">{username || 'Usuario'}</p>
                         <p className="text-xs text-purple-300/60">Configuración</p>
@@ -144,7 +146,7 @@ function Layout({ children, currentPage, onNavigate, onLogout, username, token, 
                           }}
                           className="w-full px-4 py-2 text-left text-sm text-purple-300 hover:bg-purple-900/30 transition-colors"
                         >
-                          ✏️ Cambiar Usuario
+                         Cambiar Usuario
                         </button>
                         <button
                           onClick={() => {
@@ -154,7 +156,7 @@ function Layout({ children, currentPage, onNavigate, onLogout, username, token, 
                           }}
                           className="w-full px-4 py-2 text-left text-sm text-purple-300 hover:bg-purple-900/30 transition-colors"
                         >
-                          🔑 Cambiar Contraseña
+                          Cambiar Contraseña
                         </button>
                         <button
                           onClick={() => {
@@ -166,7 +168,7 @@ function Layout({ children, currentPage, onNavigate, onLogout, username, token, 
                           }}
                           className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-900/20 transition-colors"
                         >
-                          🗑️ Borrar Cuenta
+                          Borrar Cuenta
                         </button>
                         <div className="border-t border-purple-900/30 my-2"></div>
                         <button
@@ -176,14 +178,13 @@ function Layout({ children, currentPage, onNavigate, onLogout, username, token, 
                           }}
                           className="w-full px-4 py-2 text-left text-sm text-purple-300 hover:bg-purple-900/30 transition-colors"
                         >
-                          🚪 Cerrar Sesión
+                          Cerrar Sesión
                         </button>
                       </div>
                     </div>
                   )}
                 </>
               ) : (
-                /* Botones de Login/Register cuando no hay usuario */
                 <div className="flex items-center gap-2">
                   <button
                     onClick={onShowLogin}
@@ -203,7 +204,6 @@ function Layout({ children, currentPage, onNavigate, onLogout, username, token, 
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="p-4 lg:p-8">
           {children}
         </main>

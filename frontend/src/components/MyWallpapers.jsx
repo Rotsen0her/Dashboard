@@ -137,7 +137,6 @@ function MyWallpapers({ token }) {
         </p>
       </div>
 
-      {/* Grid de wallpapers - 3 columnas con aspect ratio 16:9 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {wallpapers.map((wallpaper, index) => (
           <div
@@ -155,11 +154,9 @@ function MyWallpapers({ token }) {
                 loading="lazy"
               />
               
-              {/* Overlay con acciones */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="absolute bottom-0 left-0 right-0 p-4">
                   <div className="flex items-center justify-between gap-2">
-                    {/* Botón de descarga */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -183,7 +180,6 @@ function MyWallpapers({ token }) {
                       Descargar
                     </button>
                     
-                    {/* Botón de eliminar */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -209,7 +205,6 @@ function MyWallpapers({ token }) {
                 </div>
               </div>
 
-              {/* Badge de "Tuyo" */}
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <span className="px-2 py-1 bg-black/70 backdrop-blur-sm text-xs text-white rounded-full">
                   Tuyo

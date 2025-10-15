@@ -18,7 +18,6 @@ function Home({ token }) {
   const fetchAllWallpapers = async () => {
     setLoading(true);
     try {
-      // Si no hay token, intentar obtener wallpapers sin autenticación
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
       
       const response = await fetch(`${API_URL}/wallpapers`, {
@@ -39,7 +38,7 @@ function Home({ token }) {
   };
 
   const fetchFavorites = async () => {
-    if (!token) return; // No cargar favoritos si no hay token
+    if (!token) return; 
     
     try {
       const response = await fetch(`${API_URL}/favorites`, {
@@ -165,14 +164,12 @@ function Home({ token }) {
         <p className="text-purple-300/60">Descubre wallpapers de toda la comunidad</p>
       </div>
 
-      {/* Grid de wallpapers - 3 columnas */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {wallpapers.map((wallpaper, index) => (
           <div
             key={index}
             className="group relative overflow-hidden rounded-lg bg-gray-900 border border-purple-900/20 hover:border-purple-600/50 transition-all duration-300 shadow-lg hover:shadow-purple-600/20"
           >
-            {/* Contenedor con aspect ratio 16:9 */}
             <div 
               className="relative aspect-video overflow-hidden cursor-pointer"
               onClick={() => setViewingImage(wallpaper.url || wallpaper)}
@@ -184,7 +181,6 @@ function Home({ token }) {
                 loading="lazy"
               />
               
-              {/* Overlay con botones */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="absolute bottom-0 left-0 right-0 p-4">
                   <div className="flex items-center justify-between mb-3">
@@ -198,7 +194,6 @@ function Home({ token }) {
                     </div>
                   </div>
                   
-                  {/* Botones de acción */}
                   <div className="flex items-center gap-2">
                     <button
                       onClick={(e) => {

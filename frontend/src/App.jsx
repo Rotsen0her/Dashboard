@@ -30,7 +30,6 @@ function App() {
   };
 
   const handleNavigate = (page) => {
-    // Si intenta acceder a páginas protegidas sin login, mostrar modal de login
     if (!token && (page === 'upload' || page === 'my-wallpapers' || page === 'favorites')) {
       setShowAuthModal('login');
       return;
@@ -54,7 +53,6 @@ function App() {
         {currentPage === 'favorites' && token && <Favorites token={token} />}
       </Layout>
 
-      {/* Modales de autenticación */}
       {showAuthModal === 'login' && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="relative">

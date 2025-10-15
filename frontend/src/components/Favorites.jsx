@@ -130,7 +130,6 @@ function Favorites({ token }) {
         </p>
       </div>
 
-      {/* Grid de favoritos - 3 columnas con aspect ratio 16:9 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {favorites.map((favorite, index) => (
           <div
@@ -148,10 +147,8 @@ function Favorites({ token }) {
                 loading="lazy"
               />
               
-              {/* Overlay con información y acciones */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="absolute bottom-0 left-0 right-0 p-4">
-                  {/* Info del usuario */}
                   <div className="flex items-center space-x-2 mb-3">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-purple-900 flex items-center justify-center text-white text-xs font-semibold">
                       {favorite.username ? favorite.username.charAt(0).toUpperCase() : 'U'}
@@ -161,9 +158,7 @@ function Favorites({ token }) {
                     </span>
                   </div>
 
-                  {/* Botones de acción */}
                   <div className="flex items-center gap-2">
-                    {/* Botón de descargar */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -187,7 +182,6 @@ function Favorites({ token }) {
                       Descargar
                     </button>
                     
-                    {/* Botón de quitar de favoritos */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -202,7 +196,6 @@ function Favorites({ token }) {
                 </div>
               </div>
 
-              {/* Badge de favorito */}
               <div className="absolute top-2 right-2">
                 <span className="px-3 py-1 bg-yellow-600/90 backdrop-blur-sm text-xs font-semibold text-white rounded-full flex items-center gap-1">
                   ⭐ Favorito

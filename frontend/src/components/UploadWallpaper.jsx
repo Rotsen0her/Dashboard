@@ -69,7 +69,6 @@ function UploadWallpaper({ token }) {
       setSuccess('¡Wallpaper subido exitosamente! 🎉');
       setPreview(null);
       setSelectedFile(null);
-      // Reset file input
       const fileInput = document.getElementById('file-input');
       if (fileInput) fileInput.value = '';
       
@@ -97,7 +96,6 @@ function UploadWallpaper({ token }) {
       </div>
 
       <div className="space-y-6">
-        {/* Upload Area */}
         {!preview ? (
           <label
             htmlFor="file-input"
@@ -131,7 +129,6 @@ function UploadWallpaper({ token }) {
             />
           </label>
         ) : (
-          /* Preview Area */
           <div className="space-y-4">
             <div className="relative rounded-lg overflow-hidden bg-black border border-purple-900/30">
               <img
@@ -159,7 +156,6 @@ function UploadWallpaper({ token }) {
               </button>
             </div>
 
-            {/* File Info */}
             <div className="flex items-center justify-between p-4 bg-purple-900/20 rounded-lg border border-purple-900/30">
               <div>
                 <p className="text-white font-medium">{selectedFile?.name}</p>
@@ -175,7 +171,6 @@ function UploadWallpaper({ token }) {
               </button>
             </div>
 
-            {/* Upload Button */}
             <button
               onClick={handleUpload}
               disabled={uploading}
@@ -205,28 +200,26 @@ function UploadWallpaper({ token }) {
                   Subiendo...
                 </span>
               ) : (
-                '⬆️ Subir Wallpaper'
+                'Subir Wallpaper'
               )}
             </button>
           </div>
         )}
 
-        {/* Messages */}
         {error && (
           <div className="p-4 bg-red-900/20 border border-red-500/50 rounded-lg">
-            <p className="text-red-400 text-center">❌ {error}</p>
+            <p className="text-red-400 text-center">{error}</p>
           </div>
         )}
 
         {success && (
           <div className="p-4 bg-green-900/20 border border-green-500/50 rounded-lg">
-            <p className="text-green-400 text-center">✅ {success}</p>
+            <p className="text-green-400 text-center">{success}</p>
           </div>
         )}
 
-        {/* Tips */}
         <div className="p-6 bg-purple-900/10 border border-purple-900/30 rounded-lg">
-          <h3 className="text-lg font-semibold text-white mb-3">💡 Consejos para subir wallpapers</h3>
+          <h3 className="text-lg font-semibold text-white mb-3">Consejos para subir wallpapers</h3>
           <ul className="space-y-2 text-purple-300/80 text-sm">
             <li>• Usa imágenes de alta calidad para mejores resultados</li>
             <li>• Formatos recomendados: JPG, PNG</li>
