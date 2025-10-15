@@ -11,16 +11,10 @@ services:
       - db
 
   frontend:
-    image: node:20-alpine
+    build: ./frontend
     container_name: wallpapers_frontend
-    working_dir: /app
     ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-    command: sh -c "npm install && npm run dev"
-    environment:
-      - NODE_ENV=development
+      - "3000:80"
 
   db:
     image: postgres:15
@@ -46,8 +40,7 @@ services:
       - frontend
       - backend
     volumes:
-      - ./certbot/certificates:/etc/letsencrypt
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./certbot/certificates:/etc/nginx/certificates
 
 volumes:
   db_data:
